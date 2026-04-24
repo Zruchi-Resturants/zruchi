@@ -31,7 +31,6 @@ export default function FoodMap({
     useRef<mapboxgl.Marker[]>([]);
 
 
-
   /* MAP INIT */
   useEffect(() => {
 
@@ -62,8 +61,7 @@ export default function FoodMap({
 
 
 
-
-  /* MARKERS */
+  /* CREATE MARKERS ONCE ONLY */
   useEffect(() => {
 
     if(!mapRef.current) return;
@@ -76,44 +74,20 @@ export default function FoodMap({
 
     restaurants.forEach((r)=>{
 
-      const active =
-        hovered?.id===r.id ||
-        selected?.id===r.id;
-
       const el =
         document.createElement("div");
 
-      el.style.width =
-        active ? "20px":"14px";
-
-      el.style.height =
-        active ? "20px":"14px";
-
+      /* static markers */
+      el.style.width="14px";
+      el.style.height="14px";
       el.style.borderRadius="50%";
-
-      el.style.background =
-        active
-          ? "#f97316"
-          : "#22d3ee";
-
-      el.style.border =
-        "2px solid white";
-
+      el.style.background="#22d3ee";
+      el.style.border="2px solid white";
       el.style.cursor="pointer";
 
-      el.style.transition =
-        "all .2s ease";
-
-
-      /* click marker select/unselect */
+      /* click marker -> DesktopExplorer handles toggle */
       el.onclick = () => {
-
-        if(selected?.id===r.id){
-          onSelect?.(null);
-        }else{
-          onSelect?.(r);
-        }
-
+        onSelect?.(r);
       };
 
 
@@ -131,47 +105,14 @@ export default function FoodMap({
 
       const marker =
         new mapboxgl.Marker(el)
-        .setLngLat([lng,lat])
-        .addTo(mapRef.current!);
+          .setLngLat([lng,lat])
+          .addTo(mapRef.current!);
 
       markersRef.current.push(marker);
 
     });
 
-  },[
-    restaurants,
-    hovered,
-    selected,
-    onSelect
-  ]);
-
-
-
-  /* hover fly */
-  useEffect(()=>{
-
-    if(!hovered || !mapRef.current) return;
-
-    const lng =
-      hovered.lng ??
-      hovered.location?.lng;
-
-    const lat =
-      hovered.lat ??
-      hovered.location?.lat;
-
-    if(
-      typeof lng==="number" &&
-      typeof lat==="number"
-    ){
-      mapRef.current.flyTo({
-        center:[lng,lat],
-        duration:700
-      });
-    }
-
-  },[hovered]);
-
+  },[restaurants]);
 
 
   return (

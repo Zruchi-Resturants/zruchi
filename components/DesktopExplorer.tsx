@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Map from "@/components/Map";
 import RestaurantList from "@/components/RestaurantList";
+import SelectedCard from "@/components/SelectedCard";
 import { restaurants } from "@/data/restaurants";
 
 export default function DesktopExplorer() {
@@ -11,39 +12,37 @@ const [selected,setSelected]=useState<any>(null);
 const [hovered,setHovered]=useState<any>(null);
 
 
-/* FIXED */
+/* FIXED TOGGLE */
 const toggleSelect=(r:any)=>{
-
-if(!r){
- setSelected(null);
- return;
-}
-
-if(selected?.id===r.id){
- setSelected(null);
-}
-else{
- setSelected(r);
-}
-
+ setSelected((prev:any)=>{
+   if(prev?.id===r?.id){
+     return null;
+   }
+   return r;
+ });
 };
 
 
 return(
-<div className="flex h-[calc(100vh-56px)] bg-black">
+<div className="flex h-[calc(100vh-56px)] bg-black overflow-hidden">
 
-{/* MAP 70 */}
-<div className="w-[70%]">
+{/* MAP */}
+<div className="relative w-[70%]">
 <Map
  restaurants={restaurants}
  hovered={hovered}
  selected={selected}
  onSelect={toggleSelect}
 />
+
+{selected && (
+ <SelectedCard selected={selected}/>
+)}
+
 </div>
 
 
-{/* LIST 30 */}
+{/* LIST */}
 <div className="w-[30%] overflow-y-auto bg-[#111] border-l border-zinc-800">
 
 <RestaurantList
