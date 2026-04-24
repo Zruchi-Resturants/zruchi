@@ -1,25 +1,52 @@
 "use client";
 
-export default function BottomTabs({ view, setView }: any) {
-  return (
-    <div className="absolute bottom-5 left-1/2 -translate-x-1/2 bg-white text-black rounded-full shadow-lg flex overflow-hidden">
-      <button
-        onClick={() => setView("map")}
-        className={`px-6 py-3 text-sm font-medium ${
-          view === "map" ? "bg-black text-white" : ""
-        }`}
-      >
-        🗺 Map
-      </button>
+type Props = {
+  view: "map" | "list";
+  setView: (view: "map" | "list") => void;
+};
 
-      <button
-        onClick={() => setView("list")}
-        className={`px-6 py-3 text-sm font-medium ${
-          view === "list" ? "bg-black text-white" : ""
-        }`}
-      >
-        📋 List
-      </button>
+export default function BottomTabs({
+  view,
+  setView,
+}: Props) {
+  return (
+    <div
+      className="
+        fixed
+        left-1/2
+        -translate-x-1/2
+        bottom-8
+        md:bottom-6
+        z-50
+      "
+    >
+      <div className="bg-white rounded-full shadow-2xl overflow-hidden flex border">
+
+        <button
+          onClick={() => setView("map")}
+          className={`
+            px-8 py-3 text-sm font-medium transition
+            ${view === "map"
+              ? "bg-black text-white"
+              : "bg-white text-black"}
+          `}
+        >
+          🗺 Map
+        </button>
+
+        <button
+          onClick={() => setView("list")}
+          className={`
+            px-8 py-3 text-sm font-medium transition
+            ${view === "list"
+              ? "bg-black text-white"
+              : "bg-white text-black"}
+          `}
+        >
+          📋 List
+        </button>
+
+      </div>
     </div>
   );
 }
