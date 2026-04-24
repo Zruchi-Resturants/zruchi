@@ -4,8 +4,7 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
+  CarouselNavigation,
 } from "@/components/ui/carousel";
 
 type Props = {
@@ -31,9 +30,7 @@ export default function RestaurantCard({ restaurant }: Props) {
             ))}
           </CarouselContent>
 
-          {/* Arrows */}
-          <CarouselPrevious className="left-2" />
-          <CarouselNext className="right-2" />
+          <CarouselNavigation className="left-0 w-full px-2" />
         </Carousel>
       </div>
 
