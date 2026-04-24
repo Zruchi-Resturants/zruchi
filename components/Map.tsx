@@ -2,57 +2,116 @@
 
 import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
 
-export default function Map({
-  restaurants,
+type Props = {
+  restaurants?: any[];
+  hovered?: any;
+  selected?: any;
+  onSelect?: (r:any)=>void;
+};
+
+export default function FoodMap({
+  restaurants = [],
+  hovered,
+  selected,
   onSelect,
-}: {
-  restaurants: any[];
-  onSelect: (r: any | null) => void;
-}) {
-  const mapRef = useRef<any>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+}: Props) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<mapboxgl.Map | null>(null);
+  const markersRef = useRef<mapboxgl.Marker[]>([]);
 
-  // ✅ store latest onSelect (fix stale closure)
-  const onSelectRef = useRef(onSelect);
-  onSelectRef.current = onSelect;
-
+  // initialize ONCE
   useEffect(() => {
-    if (mapRef.current) return;
+    if (!containerRef.current || mapRef.current) return;
 
-    const map = new mapboxgl.Map({
-      container: containerRef.current!,
-      style: "mapbox://styles/zruchi/cmo8gpl84000i01sf7cg2akgg",
-      center: [80.651449, 16.4989],
-      zoom: 13, // ✅ zoom in more (you asked earlier)
+    mapRef.current = new mapboxgl.Map({
+      container: containerRef.current,
+      style: "mapbox://styles/mapbox/dark-v11",
+      center: [80.6480, 16.5062],
+      zoom: 12,
     });
 
-    mapRef.current = map;
+    mapRef.current.addControl(
+      new mapboxgl.NavigationControl(),
+      "bottom-right"
+    );
 
-    // ✅ CLICK EMPTY MAP → DESELECT (Zillow behavior)
-    map.on("click", () => {
-      onSelectRef.current(null);
-    });
+    // important after hidden/flex layouts
+    setTimeout(() => {
+      mapRef.current?.resize();
+    }, 300);
 
-    // ADD MARKERS
+    return () => {
+      mapRef.current?.remove();
+      mapRef.current = null;
+    };
+  }, []);
+
+
+  // draw markers
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    markersRef.current.forEach((m) => m.remove());
+    markersRef.current = [];
+
     restaurants.forEach((r) => {
+      const active =
+        hovered?.id === r.id ||
+        selected?.id === r.id;
+
       const el = document.createElement("div");
+      el.style.width = active ? "20px" : "14px";
+      el.style.height = active ? "20px" : "14px";
+      el.style.borderRadius = "50%";
+      el.style.background = active
+        ? "#f97316"
+        : "#22d3ee";
+      el.style.border = "2px solid white";
+      el.style.cursor = "pointer";
 
-      el.className =
-        "w-4 h-4 bg-cyan-400 rounded-full border-2 border-white shadow-lg cursor-pointer";
+      el.onclick = () => onSelect?.(r);
 
-      el.addEventListener("click", (e) => {
-        e.stopPropagation(); // 🔥 prevent map click
-        onSelectRef.current(r); // ✅ always latest
-      });
+      const lng = r.lng ?? r.location?.lng;
+      const lat = r.lat ?? r.location?.lat;
 
-      new mapboxgl.Marker(el)
-        .setLngLat([r.lng, r.lat])
-        .addTo(map);
+      if (
+        typeof lng !== "number" ||
+        typeof lat !== "number"
+      ) return;
+
+      const marker = new mapboxgl.Marker(el)
+        .setLngLat([lng, lat])
+        .addTo(mapRef.current!);
+
+      markersRef.current.push(marker);
     });
-  }, [restaurants]);
+  }, [restaurants, hovered, selected, onSelect]);
 
-  return <div ref={containerRef} className="w-full h-full" />;
+
+  // hover fly
+  useEffect(() => {
+    if (!hovered || !mapRef.current) return;
+
+    const lng = hovered.lng ?? hovered.location?.lng;
+    const lat = hovered.lat ?? hovered.location?.lat;
+
+    if (lng && lat) {
+      mapRef.current.flyTo({
+        center:[lng,lat],
+        duration:700
+      });
+    }
+  }, [hovered]);
+
+
+  return (
+    <div
+      ref={containerRef}
+      className="w-full h-full"
+    />
+  );
 }

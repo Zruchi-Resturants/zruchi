@@ -1,44 +1,36 @@
 "use client";
 
+import RestaurantCard from "./RestaurantCard";
+
+type Props = {
+  restaurants: any[];
+  onSelect?: (r:any)=>void;
+  onHover?: (r:any)=>void;
+  onLeave?: ()=>void;
+};
+
 export default function RestaurantList({
   restaurants,
   onSelect,
-}: {
-  restaurants: any[];
-  onSelect: (r: any) => void;
-}) {
+  onHover,
+  onLeave
+}: Props) {
+
   return (
-    <div className="h-full overflow-y-auto bg-black p-4 space-y-4">
-      {restaurants.map((r) => (
+    <div className="p-4 space-y-4">
+
+      {restaurants.map((restaurant)=>(
         <div
-          key={r.id}
-          onClick={() => onSelect(r)}
-          className="bg-white text-black rounded-xl overflow-hidden shadow-md cursor-pointer active:scale-95 transition"
+          key={restaurant.id}
+          onMouseEnter={() => onHover?.(restaurant)}
+          onMouseLeave={() => onLeave?.()}
+          onClick={() => onSelect?.(restaurant)}
+          className="cursor-pointer transition hover:scale-[1.01]"
         >
-          {/* IMAGE */}
-          <img
-            src={r.images?.[0]}
-            className="w-full h-44 object-cover"
-          />
-
-          {/* TEXT */}
-          <div className="p-3">
-            <h2 className="font-semibold text-lg">{r.name}</h2>
-
-            <p className="text-sm text-gray-500 mt-1">
-              ⭐ {r.rating}
-            </p>
-
-            <p className="text-sm mt-1 font-medium">
-              ₹{r.price} for two
-            </p>
-
-            <p className="text-xs text-gray-400 mt-1">
-              {r.address}
-            </p>
-          </div>
+          <RestaurantCard restaurant={restaurant} />
         </div>
       ))}
+
     </div>
   );
 }
