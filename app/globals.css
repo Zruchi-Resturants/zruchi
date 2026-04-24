@@ -138,3 +138,22 @@
     @apply font-sans;
   }
 }
+
+.zruchi-map-popup.mapboxgl-popup {
+  z-index: 3;
+}
+
+.zruchi-map-popup .mapboxgl-popup-content {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.zruchi-map-popup .mapboxgl-popup-tip {
+  display: none;
+}
+
+.zruchi-map-popup .mapboxgl-popup-close-button {
+  display: none;
+}

@@ -3,13 +3,11 @@
 import { useState } from "react";
 import Map from "@/components/Map";
 import RestaurantList from "@/components/RestaurantList";
-import SelectedCard from "@/components/SelectedCard";
 import { restaurants } from "@/data/restaurants";
 
 export default function DesktopExplorer() {
 
 const [selected,setSelected]=useState<any>(null);
-const [hovered,setHovered]=useState<any>(null);
 
 
 /* FIXED TOGGLE */
@@ -30,14 +28,9 @@ return(
 <div className="relative w-[70%]">
 <Map
  restaurants={restaurants}
- hovered={hovered}
  selected={selected}
  onSelect={toggleSelect}
 />
-
-{selected && (
- <SelectedCard selected={selected}/>
-)}
 
 </div>
 
@@ -49,8 +42,6 @@ return(
  restaurants={restaurants}
  selected={selected}
  onSelect={toggleSelect}
- onHover={setHovered}
- onLeave={()=>setHovered(null)}
 />
 
 </div>
