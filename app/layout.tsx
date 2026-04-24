@@ -1,5 +1,5 @@
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import RouteNavbar from "@/components/route-navbar";
 
 export const metadata = {
   title: "Zruchi",
@@ -14,13 +14,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* NAVBAR */}
-        <Navbar />
+        <RouteNavbar />
 
-        {/* CONTENT (push below navbar) */}
-        <div className="pt-14">
-          {children}
-        </div>
+        {children}
       </body>
     </html>
   );

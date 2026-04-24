@@ -2,35 +2,53 @@
 
 import RestaurantCard from "./RestaurantCard";
 
-type Props = {
-  restaurants: any[];
-  onSelect?: (r:any)=>void;
-  onHover?: (r:any)=>void;
-  onLeave?: ()=>void;
-};
-
 export default function RestaurantList({
-  restaurants,
-  onSelect,
-  onHover,
-  onLeave
-}: Props) {
+ restaurants,
+ selected,
+ onSelect,
+ onHover,
+ onLeave
+}:any){
 
-  return (
-    <div className="p-4 space-y-4">
+return(
+<div className="p-4 space-y-4">
 
-      {restaurants.map((restaurant)=>(
-        <div
-          key={restaurant.id}
-          onMouseEnter={() => onHover?.(restaurant)}
-          onMouseLeave={() => onLeave?.()}
-          onClick={() => onSelect?.(restaurant)}
-          className="cursor-pointer transition hover:scale-[1.01]"
-        >
-          <RestaurantCard restaurant={restaurant} />
-        </div>
-      ))}
+{restaurants.map((restaurant:any)=>{
 
-    </div>
-  );
+const isSelected=
+ selected?.id===restaurant.id;
+
+return(
+<div
+key={restaurant.id}
+onClick={()=>onSelect?.(restaurant)}
+onMouseEnter={()=>onHover?.(restaurant)}
+onMouseLeave={()=>onLeave?.()}
+className={`
+rounded-2xl
+cursor-pointer
+transition-all
+duration-200
+
+hover:-translate-y-1
+hover:ring-2
+hover:ring-orange-500
+
+${isSelected
+? "ring-2 ring-orange-500 bg-zinc-900 scale-[1.01]"
+: ""
+}
+`}
+>
+<RestaurantCard
+ restaurant={restaurant}
+/>
+</div>
+)
+
+})}
+
+</div>
+)
+
 }
