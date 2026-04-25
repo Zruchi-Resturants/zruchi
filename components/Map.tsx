@@ -147,7 +147,7 @@ export default function FoodMap({
 
       el.appendChild(dot);
 
-      markerElsRef.current[r.id] = el;
+      markerElsRef.current[String(r.id)] = el;
 
       const popupNode = createPopupNode(r);
 
@@ -166,24 +166,24 @@ export default function FoodMap({
         }
 
         onSelect?.(r);
-        setHoveredId(r.id);
+        setHoveredId(String(r.id));
         if (isDesktop) {
           openPopup(r, lng, lat, popupNode);
         }
-        setActiveMarker(r.id);
+        setActiveMarker(String(r.id));
       });
 
       el.addEventListener("mouseenter", () => {
-        setHoveredId(r.id);
+        setHoveredId(String(r.id));
         if (isDesktop) {
           openPopup(r, lng, lat, popupNode);
         }
-        setActiveMarker(r.id);
+        setActiveMarker(String(r.id));
       });
 
       el.addEventListener("mouseleave", () => {
         if (selectedRef.current?.id !== r.id) {
-          setHoveredId((current) => (current === r.id ? null : current));
+          setHoveredId((current) => (current === String(r.id) ? null : current));
           closePopup();
           setActiveMarker(selectedRef.current?.id ?? null);
         }
@@ -203,10 +203,10 @@ export default function FoodMap({
 
 
   useEffect(() => {
-    const active = selected ?? restaurants.find((item) => item.id === hoveredId);
+    const active = selected ?? restaurants.find((item) => String(item.id) === hoveredId);
 
     Object.entries(markerElsRef.current).forEach(([id, el]) => {
-      const isActive = active?.id === id;
+      const isActive = String(active?.id) === id;
       const dot = el.firstElementChild as HTMLDivElement | null;
 
       if (!dot) return;
@@ -233,13 +233,15 @@ export default function FoodMap({
     if (isDesktop) {
       openPopup(active, lng, lat, createPopupNode(restaurant));
     }
-    setActiveMarker(active.id);
+    setActiveMarker(String(active.id));
   }, [hoveredId, isDesktop, restaurants, selected]);
 
 
-  function setActiveMarker(activeId: string | null) {
+  function setActiveMarker(activeId: string | number | null) {
+    const normalizedActiveId = activeId === null ? null : String(activeId);
+
     Object.entries(markerElsRef.current).forEach(([id, el]) => {
-      const isActive = id === activeId;
+      const isActive = id === normalizedActiveId;
       const dot = el.firstElementChild as HTMLDivElement | null;
 
       if (!dot) return;

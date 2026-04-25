@@ -38,7 +38,7 @@ export default function RestaurantCard({ restaurant }: Props) {
       <div className="p-3">
         <h3 className="font-semibold text-lg">{restaurant.name}</h3>
         <p className="text-sm text-gray-500">
-          ₹{restaurant.costForTwo} for two
+          ₹{restaurant.price} for two
         </p>
         <p className="text-sm">⭐ {restaurant.rating}</p>
       </div>
