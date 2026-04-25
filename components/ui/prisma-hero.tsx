@@ -129,7 +129,8 @@ const PrismaHero = () => {
                 Zruchi curates restaurants actually worth going to — not endless listings, only places worth the drive. Handpicked through real taste, trusted recommendations, and memorable food experiences.
               </motion.p>
 
-              <motion.button
+              <motion.a
+                href="/"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
@@ -139,7 +140,7 @@ const PrismaHero = () => {
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500 transition-transform group-hover:scale-110 sm:h-10 sm:w-10">
                   <ArrowRight className="h-4 w-4" style={{ color: "white" }} />
                 </span>
-              </motion.button>
+              </motion.a>
             </div>
           </div>
         </div>
